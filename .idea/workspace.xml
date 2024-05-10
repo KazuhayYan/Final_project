@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d8ce195-b326-44c0-8000-c036c1a268b1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.venv/Configuration.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.venv/creds.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
