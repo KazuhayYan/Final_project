@@ -1,7 +1,6 @@
 import requests
 import logging
-from Configuration import Speech_kit_URL_tts, YaGPT_URL, LOGS, Speech_kit_URL_tts
-from Limits import MAX_GPT_TOKENS
+from Configuration import Speech_kit_URL_tts, YaGPT_URL, LOGS, Speech_kit_URL_tts, MAX_GPT_TOKENS
 from creds import get_creds
 
 IAM_TOKEN, FOLDER_ID = get_creds()
