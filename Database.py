@@ -8,7 +8,7 @@ path_to_database = DATABASE_FILE
 
 def create_database():
     try:
-        with sqlite3.connect(path_to_db) as conn:
+        with sqlite3.connect(path_to_database) as conn:
             cursor = conn.cursor()
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS messages (

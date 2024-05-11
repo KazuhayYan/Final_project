@@ -1,6 +1,6 @@
 import logging
 import math
-from Configuration import LOGS, MAX_USERS, MAX_USER_GPT_TOKENS, MAX_USER_STT_BLOCKS, MAX_USER_TTS_SYMBOLS
+from Configuration import LOGS, MAX_USERS, MAX_USER_GPT_TOKENS, MAX_USER_STT_BLOCKS, MAX_USER_TTS_SYMBOLS, MAX_TTS_SYMBOLS, MAX_STT_BLOCKS
 from Database import count_users, count_all_limits
 from YandexGPT import count_gpt_tokens
 
@@ -26,14 +26,24 @@ def is_stt_block_limit(message, duration):
     all_blocks = count_all_blocks(user_id) + audio_blocks
     if duration >= 30:
         msg = "SpeechKit STT работает с голосовыми сообщениями меньше 30 секунд"
-        bot.send_message(user_id, msg)
-        return None
+        return None, msg
     if all_blocks >= MAX_USER_STT_BLOCKS:
         msg = f"Превышен общий лимит SpeechKit STT {MAX_USER_STT_BLOCKS}. Использовано {all_blocks} блоков. Доступно: {MAX_USER_STT_BLOCKS - all_blocks}"
-        bot.send_message(user_id, msg)
-        return None
+        return None, msg
     return audio_blocks
 
+def count_all_blocks(user_id, db_name="messages.db"):
+    try:
+        with sqlite3.connect(db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''SELECT SUM(stt_blocks) FROM messages WHERE user_id=?''', (user_id,))
+            data = cursor.fetchone()
+            if data and data[0]:
+                return data[0]
+            else:
+                return 0
+    except Exception as e:
+        print(f"Error: {e}")
 
 def is_tts_symbol_limit(message, text):
     user_id = message.from_user.id
@@ -41,10 +51,21 @@ def is_tts_symbol_limit(message, text):
     all_symbols = count_all_symbol(user_id) + text_symbols
     if all_symbols >= MAX_USER_TTS_SYMBOLS:
         msg = f"Превышен общий лимит SpeechKit TTS {MAX_USER_TTS_SYMBOLS}. Использовано: {all_symbols} символов. Доступно: {MAX_USER_TTS_SYMBOLS - all_symbols}"
-        bot.send_message(user_id, msg)
-        return None
+        return None, msg
     if text_symbols >= MAX_TTS_SYMBOLS:
         msg = f"Превышен лимит SpeechKit TTS на запрос {MAX_TTS_SYMBOLS}, в сообщении {text_symbols} символов"
-        bot.send_message(user_id, msg)
-        return None
+        return None, msg
     return len(text)
+
+def count_all_symbol(user_id, db_name="messages.db"):
+    try:
+        with sqlite3.connect(db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''SELECT SUM(tts_symbols) FROM messages WHERE user_id=?''', (user_id,))
+            data = cursor.fetchone()
+            if data and data[0]:
+                return data[0]
+            else:
+                return 0
+    except Exception as e:
+        print(f"Error: {e}")

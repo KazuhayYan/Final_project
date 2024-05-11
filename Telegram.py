@@ -5,7 +5,6 @@ from Database import create_database, add_message, select_n_last_messages
 from YandexGPT import ask_gpt, speech_to_text, text_to_speech
 from creds import get_bot_token
 
-
 create_database()
 
 logging.basicConfig(filename=LOGS, level=logging.ERROR, format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="w")

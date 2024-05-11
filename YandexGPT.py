@@ -1,6 +1,6 @@
 import requests
 import logging
-from Configuration import Speech_kit_URL_tts, YaGPT_URL, LOGS, Speech_kit_URL_tts, MAX_GPT_TOKENS
+from Configuration import Speech_kit_URL_tts, YaGPT_URL, LOGS, Speech_kit_URL_tts, MAX_GPT_TOKENS, SYSTEM_PROMT
 from creds import get_creds
 
 IAM_TOKEN, FOLDER_ID = get_creds()
@@ -64,15 +64,6 @@ def text_to_speech(text: str):
         return True, response.content
     else:
         return False, "При запросе в SpeechKit возникла ошибка"
-
-if __name__ == "__main__":
-    success, response = text_to_speech(text)
-    if success:
-        with open("output.ogg", "wb") as audio_file:
-            audio_file.write(response)
-        print("Аудиофайл успешно сохранен как output.ogg")
-    else:
-        print("Ошибка:", response)
 
 def speech_to_text(data):
     params = "&".join([
