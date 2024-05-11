@@ -5,11 +5,11 @@ from Database import create_database, add_message, select_n_last_messages
 from YandexGPT import ask_gpt, speech_to_text, text_to_speech
 from creds import get_bot_token
 
-create_database()
 
 logging.basicConfig(filename=LOGS, level=logging.ERROR, format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="w")
 bot = telebot.TeleBot(get_bot_token())
 
+create_database()
 @bot.message_handler(comands={"start"})
 def start(message):
     bot.send_message(message.from_user.id, "Привет! Я бот-собеседник с которым ты можешь поговорить, что-нибудь спросить, рассказать о своих переживаниях и тому подобное")
