@@ -10,15 +10,15 @@ logging.basicConfig(filename=LOGS, level=logging.ERROR, format="%(asctime)s FILE
 bot = telebot.TeleBot(get_bot_token())
 
 create_database()
-@bot.message_handler(comands={"start"})
+@bot.message_handler(commands={"start"})
 def start(message):
     bot.send_message(message.from_user.id, "Привет! Я бот-собеседник с которым ты можешь поговорить, что-нибудь спросить, рассказать о своих переживаниях и тому подобное")
     bot.send_message(message.from_user.id, "Если нужна помощь отправь комнаду /help")
-@bot.message_handler(comands={"help"})
+@bot.command_handler(commands={"help"})
 def help(message):
     bot.send_message(message.from_user.id, "Что-бы начать общаться отправь голосовое или текстовое сообщение.")
 
-@bot.message_handler(comands={"debug"})
+@bot.message_handler(commands={"debug"})
 def debug(message):
     with open("logs.txt", "rb") as debug_document:
         bot.send_document(message.chat.id, debug_document)
@@ -32,7 +32,7 @@ def handle_voice(message: telebot.types.Message):
         if not status_check_users:
             bot.send_message(user_id, error_message)
             return
-        stt_blocks, error_message = is_stt_block_limit(user_id, message.voice.duration)
+        stt_blocks, error_message = is_stt_block_limit(message, message.voice.duration)
         if error_message:
             bot.send_message(user_id, error_message)
             return
@@ -54,7 +54,7 @@ def handle_voice(message: telebot.types.Message):
             bot.send_message(user_id, answer_gpt)
             return
         total_gpt_tokens += tokens_in_answer
-        tts_symbols, error_message = is_tts_symbol_limit(user_id, answer_gpt)
+        tts_symbols, error_message = is_tts_symbol_limit(message, answer_gpt)
         add_message(user_id=user_id, full_message=[answer_gpt, 'assistant', total_gpt_tokens, tts_symbols, 0])
         if error_message:
             bot.send_message(user_id, error_message)
@@ -68,8 +68,7 @@ def handle_voice(message: telebot.types.Message):
         logging.error(e)
         bot.send_message(user_id, "Не получилось ответить. Попробуй записать другое сообщение")
 
-
-@bot.message_handler(content_types=['text'])
+@bot.message_handler(func=lambda message: message.content_types==["text"])
 def handle_text(message):
     try:
         user_id = message.from_user.id

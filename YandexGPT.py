@@ -36,7 +36,7 @@ def ask_gpt(messages):
             "temperature": 0.7,
             "maxTokens": MAX_GPT_TOKENS
         },
-        "messages": SYSTEM_PROMPT + messages
+        "messages": SYSTEM_PROMT + messages
     }
     try:
         response = requests.post(url, headers=headers, json=data)

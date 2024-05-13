@@ -27,7 +27,7 @@ def create_database():
 
 def add_message(user_id, full_message):
     try:
-        with sqlite3.connect(path_to_db) as conn:
+        with sqlite3.connect(path_to_database) as conn:
             cursor = conn.cursor()
             message, role, total_gpt_tokens, tts_symbols, stt_blocks = full_message
             cursor.execute('''
@@ -44,7 +44,7 @@ def add_message(user_id, full_message):
 
 def count_users(user_id):
     try:
-        with sqlite3.connect(path_to_db) as conn:
+        with sqlite3.connect(path_to_database) as conn:
             cursor = conn.cursor()
             cursor.execute('''SELECT COUNT(DISTINCT user_id) FROM messages WHERE user_id <> ?''', (user_id,))
             count = cursor.fetchone()[0]
@@ -57,7 +57,7 @@ def select_n_last_messages(user_id, n_last_messages=4):
     messages = []
     total_spent_tokens = 0
     try:
-        with sqlite3.connect(path_to_db) as conn:
+        with sqlite3.connect(path_to_database) as conn:
             cursor = conn.cursor()
             cursor.execute('''
             SELECT message, role, total_gpt_tokens FROM messages WHERE user_id=? ORDER BY id DESC LIMIT ?''',
@@ -74,7 +74,7 @@ def select_n_last_messages(user_id, n_last_messages=4):
 
 def count_all_limits(user_id, limit_type):
     try:
-        with sqlite3.connect(path_to_db) as conn:
+        with sqlite3.connect(path_to_database) as conn:
             cursor = conn.cursor()
             cursor.execute(f'''SELECT SUM({limit_type}) FROM messages WHERE user_id=?''', (user_id,))
             data = cursor.fetchone()
