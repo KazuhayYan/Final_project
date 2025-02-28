@@ -53,7 +53,7 @@ def count_users(user_id):
         logging.error(e)
         return None
 
-def select_n_last_messages(user_id, n_last_messages=4):
+def select_n_last_messages(user_id, n_last_messages=5):
     messages = []
     total_spent_tokens = 0
     try:

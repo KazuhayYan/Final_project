@@ -10,15 +10,15 @@ logging.basicConfig(filename=LOGS, level=logging.ERROR, format="%(asctime)s FILE
 bot = telebot.TeleBot(get_bot_token())
 
 create_database()
-@bot.message_handler(commands={"start"})
+@bot.message_handler(commands=["start"])
 def start(message):
     bot.send_message(message.from_user.id, "Привет! Я бот-собеседник с которым ты можешь поговорить, что-нибудь спросить, рассказать о своих переживаниях и тому подобное")
     bot.send_message(message.from_user.id, "Если нужна помощь отправь комнаду /help")
-@bot.command_handler(commands={"help"})
+@bot.message_handler(commands=["help"])
 def help(message):
     bot.send_message(message.from_user.id, "Что-бы начать общаться отправь голосовое или текстовое сообщение.")
 
-@bot.message_handler(commands={"debug"})
+@bot.message_handler(commands=["debug"])
 def debug(message):
     with open("logs.txt", "rb") as debug_document:
         bot.send_document(message.chat.id, debug_document)

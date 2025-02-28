@@ -3,11 +3,10 @@ import logging
 from Configuration import Speech_kit_URL_tts, YaGPT_URL, LOGS, Speech_kit_URL_tts, MAX_GPT_TOKENS, SYSTEM_PROMT
 from creds import get_creds
 
-IAM_TOKEN, FOLDER_ID = get_creds()
-
 logging.basicConfig(filename=LOGS, level=logging.ERROR, format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="w")
 
 def count_gpt_tokens(messages):
+    IAM_TOKEN, FOLDER_ID = get_creds()
     url = "https://llm.api.cloud.yandex.net/foundationModels/v1/tokenizeCompletion"
     headers = {
         'Authorization': f'Bearer {IAM_TOKEN}',
@@ -24,6 +23,7 @@ def count_gpt_tokens(messages):
         return 0
 
 def ask_gpt(messages):
+    IAM_TOKEN, FOLDER_ID = get_creds()
     url = YaGPT_URL
     headers = {
         'Authorization': f'Bearer {IAM_TOKEN}',
@@ -50,6 +50,7 @@ def ask_gpt(messages):
         return False, "Ошибка при обращении к GPT",  None
 
 def text_to_speech(text: str):
+    IAM_TOKEN, FOLDER_ID = get_creds()
     headers = {
         'Authorization': f'Bearer {IAM_TOKEN}',
     }
@@ -66,6 +67,7 @@ def text_to_speech(text: str):
         return False, "При запросе в SpeechKit возникла ошибка"
 
 def speech_to_text(data):
+    IAM_TOKEN, FOLDER_ID = get_creds()
     params = "&".join([
         "topic=general",
         f"folderId={FOLDER_ID}",
