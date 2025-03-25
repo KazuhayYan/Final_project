@@ -1,6 +1,6 @@
 import requests
 import logging
-from Configuration import Speech_kit_URL_tts, YaGPT_URL, LOGS, Speech_kit_URL_tts, MAX_GPT_TOKENS, SYSTEM_PROMT
+from Configuration import YaGPT_URL, LOGS, Speech_kit_URL_tts, MAX_GPT_TOKENS, SYSTEM_PROMT
 from creds import get_creds
 
 logging.basicConfig(filename=LOGS, level=logging.ERROR, format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="w")
@@ -14,6 +14,14 @@ def count_gpt_tokens(messages):
     }
     data = {
         'modelUri': f"gpt://{FOLDER_ID}/yandexgpt-lite",
+        "completionOptions": {
+            "stream": False,
+            "temperature": 0.7,
+            "maxTokens": f"{MAX_GPT_TOKENS}",
+            "reasoningOptions": {
+                 "mode": "DISABLED"
+            },
+        },
         "messages": messages
     }
     try:
@@ -26,17 +34,23 @@ def ask_gpt(messages):
     IAM_TOKEN, FOLDER_ID = get_creds()
     url = YaGPT_URL
     headers = {
-        'Authorization': f'Bearer {IAM_TOKEN}',
-        'Content-Type': 'application/json'
+        "Accept": "application/json",
+        'Authorization': f'Bearer {IAM_TOKEN}'
     }
     data = {
         'modelUri': f"gpt://{FOLDER_ID}/yandexgpt-lite",
         "completionOptions": {
             "stream": False,
             "temperature": 0.7,
-            "maxTokens": MAX_GPT_TOKENS
+            "maxTokens": MAX_GPT_TOKENS,
+            "reasoningOptions": {
+                "mode": "DISABLED"
+            }
         },
-        "messages": SYSTEM_PROMT + messages
+        "messages": [
+            SYSTEM_PROMT,
+            {"role": "user", "text": f"{messages}"}
+        ]
     }
     try:
         response = requests.post(url, headers=headers, json=data)
